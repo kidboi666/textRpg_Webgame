@@ -1,0 +1,83 @@
+@font-face {
+  font-family: 'DOSGothic';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSGothic.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: 'DOSGothic';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+#wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: rgb(0, 0, 0);
+  padding: 10px;
+  border-style: inset;
+  width: 500px;
+  height: 400px;
+  transition: padding-left .1s;
+}
+
+form {
+  margin-bottom: 30px;
+}
+
+input {
+  margin-bottom: 10px;
+  font-family: 'DOSGothic';
+  font-size: 20px;
+  width: 300px;
+  background-color: black;
+  color: white;
+  border-style: none;
+  outline: none;
+  padding: 5px;
+}
+
+button {
+  display: block;
+  font-family: 'DOSGothic';
+  font-size: 20px;
+  background-color: black;
+  color:white;
+  border-style: none;
+}
+
+#hero_hp {
+  transition: .5s;
+}
+
+#monster_hp {
+  transition: .5s;
+}
+
+#footer_wrap {
+  display: flex;
+  justify-content: space-between;
+}
+
+#inventory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+}
+
+#current_condition {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 5px 0 5px;
+  transform: translate3d(5px, 5px, -5px);
+  transition: 1s;
+}

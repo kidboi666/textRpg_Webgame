@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+  body {
+    background-color: #000000;
+    color: white;
+  }
+  #wrap {
+    transition: padding-left .1s;
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <form id="start_screen">
+    <input id="name_input" placeholder="주인공 이름을 입력하세요!">
+    <button id="start">시작</button>
+  </form>
+  <div id="screen">
+    <div id="hero_stat">
+      <span id="hero_name"></span>
+      <span id="hero_level"></span>
+      <span id="hero_hp"></span>
+      <span id="hero_xp"></span>
+      <span id="hero_att"></span>
+    </div>
+    <form id="game_menu" style="display: none;">
+      <div id="menu_1">1. 모험</div>
+      <div id="menu_2">2. 휴식</div>
+      <div id="menu_3">3. 종료</div>
+      <input id="menu_input">
+      <button id="menu_button">입력</button>
+    </form>
+    <form id="battle_menu" style="display: none;">
+      <div id="menu_1">1. 공격</div>
+      <div id="menu_2">2. 회복</div>
+      <div id="menu_3">3. 도망</div>
+      <input id="battle_input">
+      <button id="battle_button">입력</button>
+    </form>
+    <div id="message"></div>
+    <div id="monster_stat">
+      <div id="monster_name"></div>
+      <div id="monster_level"></div>
+      <div id="monster_hp"></div>
+      <div id="monster_att"></div>
+    </div>
+  </div>
+</div>
+<script>
+  const $wrap = document.querySelector('#wrap');
+  const $startScreen = document.querySelector('#start_screen');
+  const $gameMenu = document.querySelector('#game_menu');
+  const $battleMenu = document.querySelector('#battle_menu');
+  const $heroName = document.querySelector('#hero_name');
+  const $heroLevel = document.querySelector('#hero_level');
+  const $heroHp = document.querySelector('#hero_hp');
+  const $heroXp = document.querySelector('#hero_xp');
+  const $heroAtt = document.querySelector('#hero_att');
+  const $monsterName = document.querySelector('#monster_name');
+  const $monsterLevel = document.querySelector('#monster_level');
+  const $monsterHp = document.querySelector('#monster_hp');
+  const $monsterAtt = document.querySelector('#monster_att');
+  const $message = document.querySelector('#message');
+
+  const hero = {
+    name: '',
+    level: 1,
+    maxHp: 100,
+    hp: 100,
+    xp: 0,
+    att: 10,
+    attack(monster) {
+      monster.hp -= this.att;
+      this.hp -= monster.att;
+    },
+    heal(monster) {
+      this.hp += 20;
+      this.hp -= monster.att;
+    },
+  };
+
+  let monster = null;
+  const monsterList = [
+    { name: '슬라임', hp: 25, att: 10, xp: 10 },
+    { name: '스켈레톤', hp: 50, att: 15, xp: 20 },
+    { name: '흑염소', hp: 150, att: 35, xp: 50 },
+  ];
+
+  class Monster {
+    constructor(name, hp, att, xp) {
+      this.name = name;
+      this.hp = hp;
+      this.att = att;
+      this.xp = xp;
+    }
+    attack(hero) {
+      hero.hp -= this.att;
+      this.hp -= hero.att;
+    }
+  }
+
+  $startScreen.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const name = event.target['name_input'].value;
+    $startScreen.style.display = 'none';
+    $gameMenu.style.display = 'block';
+    $heroName.textContent = name;
+    hero.name = name;
+    $heroLevel.textContent = `${hero.level}Level`;
+    $heroHp.textContent = `HP : ${hero.hp}/${hero.maxHp}`;
+    $heroXp.textContent = `XP : ${hero.xp}/${15 * hero.level}`;
+    $heroAtt.textContent = `ATT : ${hero.att}`;
+    $message.textContent = `모험을 떠나 볼까?`;
+  });
+
+  $gameMenu.addEventListener('submit', (event) => { // 모험 메뉴
+    event.preventDefault(); // 서브밋 기본 특성 초기화
+    const input = event.target['menu_input'].value; // 입력값 input에 할당
+    if (input === '1') { // 1.모험 선택시 -> 몬스터 불러옴
+      $gameMenu.style.display = 'none';
+      $battleMenu.style.display = 'block';
+      monster = JSON.parse(
+        JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)])
+        ); // 객체 몬스터안에서 랜덤으로 하나를 가져오는데 참조 관계인 객체의 내용을 보전키 위해 깊은 복사를 사용
+      monster.maxHp = monster.hp; 
+      // 깊은 복사된 몬스터 객체에 maxHp를 넣음, 원시값은 객체 참조가 없기에 알아서 깊은 복사가 됨
+      $monsterName.textContent = monster.name;
+      $monsterHp.textContent = `HP : ${monster.hp}/${monster.maxHp}`;
+      $monsterAtt.textContent = `ATT : ${monster.att}`;
+      $message.textContent = `몬스터 ${monster.name} (을) 를 만났습니다!`
+    } else if (input === '2') { // 2. 휴식 선택시 체력을 모두 회복한다.
+      hero.hp = hero.maxHp;
+      $message.textContent = `휴식으로 체력이 모두 회복되었습니다!`
+    } else if (input === '3') { // 3. 종료 ?
+      
+    }
+  });
+
+  let battleEffectIntervalId;
+  const battleEffect = () => {
+    document.body.style.backgroundColor = 'white';
+    $wrap.style.paddingLeft = '20px';
+    setTimeout(() => {
+      document.body.style.backgroundColor = 'black';
+      $wrap.style.paddingLeft = '0';
+    }, 30)
+  };
+
+  $battleMenu.addEventListener('submit', () => { // 전투 메뉴
+    event.preventDefault();
+    const input = event.target['battle_input'].value;
+    if (input === '1') { //1. 공격 선택시
+      battleEffectIntervalId = setInterval(battleEffect, 60);
+      setTimeout(() => {
+        clearInterval(battleEffectIntervalId);
+      }, 400)
+      hero.attack(monster);
+      monster.attack(hero);
+      $message.textContent = `공격! 적에게 ${hero.att} 의 피해를 입히고 ${monster.att} 의 피해를 입었습니다!`
+      $monsterHp.textContent = `HP : ${monster.hp}/${monster.maxHp}`;
+      $monsterAtt.textContent = `ATT : ${monster.att}`;
+    } else if (input === '2') { //2. 회복시 체력을 20회복하고 10의 데미지를 입는다
+
+    } else if (input === '3') { // 3. 도망시 최대 체력의 10%의 피해를 입고 전투가 종료된다
+      
+    }
+  });
+</script>
+</body>
+</html>

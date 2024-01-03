@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSGothic.woff">
+<link rel="stylesheet" href="style.css">
+<title>TEXT-RPG</title>
+</head>
+<body>
+<div id="wrap">
+  <form id="start_screen">
+    <label>><input id="name_input" placeholder="주인공 이름을 입력하세요!" autofocus></label>
+    <button id="start_button">start</button>
+  </form>
+  <div id="screen">
+    <div id="hero_stat">
+      <span id="hero_name"></span>
+      <span id="hero_level"></span>
+      <span id="hero_hp"></span>
+      <span id="hero_xp"></span>
+      <span id="hero_att"></span>
+    </div>
+    <form id="game_menu" style="display: none;">
+      <div id="menu_1">1. 모험</div>
+      <div id="menu_2">2. 휴식</div>
+      <div id="menu_3">3. 종료</div>
+      <label>><input id="menu_input" autofocus></label>
+      <button id="game_menu_button">입력</button>
+    </form>
+    <form id="battle_menu" style="display: none;">
+      <div id="menu_1">1. 공격</div>
+      <div id="menu_2">2. 회복</div>
+      <div id="menu_3">3. 도망</div>
+      <label>><input id="battle_input" autofocus></label>
+      <button id="battle_menu_button">입력</button>
+    </form>
+    <div id="message"></div>
+    <div id="monster_stat">
+      <span id="monster_name"></span>
+      <span id="monster_level"></span>
+      <span id="monster_hp"></span>
+      <span id="monster_att"></span>
+    </div>
+  </div>
+  <footer id="footer_wrap" style="display: none;">
+    <div id="inventory"></div>
+    <div id="current_condition">현재상태</div>
+  </footer>
+</div>
+<script src="./script.js"></script>
+</body>
+</html>
