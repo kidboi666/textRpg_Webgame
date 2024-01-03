@@ -139,12 +139,12 @@
       this.hero = null;
       this.monsterList = [
         { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
+        // { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
+        // { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
+        // { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
+        // { name: '스켈레톤', hp: 50, maxHp: 50, att: 15, xp: 20 },
+        // { name: '스켈레톤', hp: 50, maxHp: 50, att: 15, xp: 20 },
         { name: '스켈레톤', hp: 50, maxHp: 50, att: 15, xp: 20 },
-        { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
-        { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
-        { name: '스켈레톤', hp: 50, maxHp: 50, att: 15, xp: 20 },
-        { name: '스켈레톤', hp: 50, maxHp: 50, att: 15, xp: 20 },
-        { name: '슬라임', hp: 25, maxHp: 25, att: 10, xp: 10 },
         { name: '마왕', hp: 150, maxHp: 150, att: 35, xp: 50 },
       ];
       this.start(name);
@@ -200,6 +200,7 @@
         }, 1000)
       } else if (input === '3') { // 3.종료
         this.quit();
+        this.showMessage();
       }
     }
     onBattleMenuInput = () => {
@@ -207,28 +208,33 @@
       const input = event.target['battle_input'].value;
       if (input === '1') { // 1.공격
         const { hero, monster } = this;
-        this.effect.battleEffect();
         hero.attack(monster);
         monster.attack(hero);
         if (hero.hp <= 0) {
-          this.showMessage(`${hero.lev} 레벨에서 전사. 새 주인공을 생성하세요.`)
           this.effect.dyingEffect();
+          this.showMessage(`당신은 ${monster.name} 에게 사망하였습니다. 잠시 뒤 메인화면으로 나갑니다`)
           setTimeout(() => {
+            this.showMessage(`${hero.lev} 레벨에서 전사. 새 주인공을 생성하세요.`)
             this.changeScreen('start');
-          },5000)
-          this.quit();
+            this.quit();
+          },6000)
         } else if (monster.hp <= 0) {
           this.showMessage(`몬스터를 잡아 ${monster.xp} 경험치를 얻었다`)
           hero.getXp(monster.xp);
           this.monster = null;
           this.changeScreen('game');
         } else {
+          this.effect.battleEffect();
           this.showMessage(`나의 공격으로 ${this.hero.att}의 데미지를 주고 ${this.monster.att}의 데미지를 받았다!`)
         }
         this.updateHeroStat();
         this.updateMonsterStat();
       } else if (input === '2') { // 2.회복
-
+        const { hero, monster } = this;
+        hero.heal(monster);
+        this.effect.healingSelfEffect();
+        this.showMessage(`체력을 소량 회복했지만 적의 기습에 당했다!`)
+        this.updateHeroStat();
       } else if (input === '3') { // 3.도망
         this.showMessage(`${this.monster.name}으로 부터 가까스러 도망쳤다!`)
         this.monster = null;
@@ -318,10 +324,25 @@
       }, 1000)
     }
     dyingEffect = () => {
-      game = null;
-      
       document.body.style.backgroundColor = 'red';
-      document.body.style.transition = '3.0s'
+      document.body.style.transition = '3s'
+      setTimeout(() => {
+        document.body.style.backgroundColor = 'black';
+      }, 3000);
+      setTimeout(() => {
+        document.body.style.transition = 'none';
+      }, 6000);
+    }
+    levelUpEffect = () => {
+      $heroLevel.style.backgroundColor = 'white'
+      
+      $heroLevel.style.transition = '.5s'
+      setTimeout(() => {
+        $heroLevel.style.backgroundColor = 'black';
+      }, 500);
+      setTimeout(() => {
+        $heroLevel.style.transition = 'none';
+      }, 1000)
     }
     returnScreen = () => {
       setTimeout(() => {
@@ -350,12 +371,14 @@
       this.lev = 1;
     }
     heal(monster) {
-      this.hp += 20;
+      this.hp = Math.min(this.maxHp, this.hp + 20);
       this.hp -= monster.att;
     }
     getXp(xp) {
       this.xp += xp;
       if (this.xp >= this.lev * 15) {// 경험치를 다 채우면
+        this.effect = new Effect();
+        this.effect.levelUpEffect();
         this.xp -= this.lev * 15;
         this.lev += 1;
         this.maxHp += 5;
