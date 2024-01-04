@@ -21,6 +21,7 @@ const $footerWrap = document.querySelector('#footer_wrap');
 const $inventory = document.querySelector('#inventory');
 const $condition = document.querySelector('#current_condition');
 let EffectIntervalId;
+let dodododo;
 
 class Game {
   constructor(name) {
