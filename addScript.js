@@ -1,4 +1,0 @@
-function dodo() {
-  let merge;
-
-}
